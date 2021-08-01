@@ -1,0 +1,20 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Service.Controllers.HomePageModel;
+@{
+    Layout = "_Layout";
+}
+
+<table class="overview-table">
+    <tbody>
+        <tr>
+            <td>Computer name</td>
+            <td>@Model.ComputerName</td>
+        </tr>
+        <tr>
+            <td>Private memory (bytes)</td>
+            <td>@Model.PrivateMemoryBytes</td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,54 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+*{
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+header {
+    padding: 0.5em;
+    font-size: 4em;
+    text-align: center;
+}
+
+/*
+    Overview table on the home page
+*/
+
+.overview-table
+{
+    width: calc(100% - 1em);
+    margin: 0.5em;
+    border-spacing: 0;
+}
+
+.overview-table td {
+    border: 1px solid #dddddd;
+    padding: 0.5em 1em;
+}
+
+.overview-table tr:nth-child(even) {
+    background: #F7F7F7;
+}
+
+.overview-table tr td:nth-child(odd) {
+    width: 30%;
+    font-weight: bold;
+}
+
+.main {
+    display: flex;
+}
+
+.main .menu {
+    flex: 20% 0 0;
+}
+
+.main .content {
+    flex: 1 1 auto;
+}

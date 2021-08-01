@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@(this.ViewBag.Title ?? "Docker Service")</title>
+    <link rel="stylesheet" type="text/css" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        Web site and API playground
+    </header>
+    <div class="main">
+        <ul class="menu">
+            @foreach (var element in Service.Controllers.Utilities.MainMenuElementsCollector.GetMainMenuElements())
+            {
+                <li>
+                    @Html.ActionLink(element.Text, element.Action, element.Controller)
+                </li>
+            }
+        </ul>
+        <div class="content">
+            @RenderBody()
+        </div>
+    </div>
+</body>
+</html>
