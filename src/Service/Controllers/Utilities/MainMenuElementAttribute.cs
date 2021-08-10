@@ -16,5 +16,7 @@ namespace Service.Controllers.Utilities
         }
 
         public string ElementText { get; }
+
+        public int Order { get; set; } = int.MaxValue;
     }
 }

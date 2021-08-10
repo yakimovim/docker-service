@@ -27,11 +27,11 @@ namespace Service.Controllers.Utilities
                             .SelectMany(t => t
                                 .GetMethods(BindingFlags.Public | BindingFlags.Instance)
                                 .Where(m => m.GetCustomAttribute<MainMenuElementAttribute>() != null)
-                                .Select(m => new { ControllerType = t, Action = m }));
+                                .Select(m => new { ControllerType = t, Action = m, Attribute = m.GetCustomAttribute<MainMenuElementAttribute>() }));
 
                         _elements = actionsForMainMenu
+                            .OrderBy(a => a.Attribute.Order)
                             .Select(a => {
-                                var attribute = a.Action.GetCustomAttribute<MainMenuElementAttribute>();
                                 var controllerName = a.ControllerType.Name;
                                 if(controllerName.EndsWith("Controller"))
                                 {
@@ -40,7 +40,7 @@ namespace Service.Controllers.Utilities
                                 return new MainMenuElement(
                                     controllerName,
                                     a.Action.Name,
-                                    attribute.ElementText);
+                                    a.Attribute.ElementText);
                             })
                             .ToList();
                     }

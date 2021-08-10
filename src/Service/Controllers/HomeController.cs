@@ -14,7 +14,7 @@ namespace Service.Controllers
             _modelFactory = modelFactory ?? throw new ArgumentNullException(nameof(modelFactory));
         }
 
-        [MainMenuElement("Home")]
+        [MainMenuElement("Home", Order = int.MinValue)]
         public IActionResult Index()
         {
             var model = _modelFactory.Create();
