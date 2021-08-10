@@ -1,0 +1,22 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Service.Controllers.HealthModel
+@{
+    Layout = "_Layout";
+}
+
+<form method="post">
+    <div class="form-check form-switch">
+        @Html.CheckBoxFor(m => m.IsHealthy, new { @class = "form-check-input" })
+        <label class="form-check-label" for="IsHealthy">Is healthy</label>
+    </div>
+    <div class="form-check form-switch">
+        @Html.CheckBoxFor(m => m.IsReady, new { @class = "form-check-input" })
+        <label class="form-check-label" for="IsReady">Is ready</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Apply</button>
+</form>
+
+
+

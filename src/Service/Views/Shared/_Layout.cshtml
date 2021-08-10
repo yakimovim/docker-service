@@ -1,16 +1,20 @@
 ﻿<!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@(this.ViewBag.Title ?? "Docker Service")</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/minty-bootstrap@2.0.0/dist/minty.min.css" />
     <link rel="stylesheet" type="text/css" href="~/css/site.css" />
 </head>
 <body>
-    <header>
-        Web site and API playground
-    </header>
-    <div class="main">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand w-100 text-center fs-1 fw-bold" href="/">Web site and API playground</a>
+        </div>
+    </nav>
+    <div class="d-flex">
         <ul class="menu">
             @foreach (var element in Service.Controllers.Utilities.MainMenuElementsCollector.GetMainMenuElements())
             {
@@ -19,9 +23,12 @@
                 </li>
             }
         </ul>
-        <div class="content">
+        <div class="flex-grow-1 pt-2">
             @RenderBody()
         </div>
     </div>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    @RenderSection("Scripts", false)
 </body>
 </html>
