@@ -19,7 +19,16 @@
             @foreach (var element in Service.Controllers.Utilities.MainMenuElementsCollector.GetMainMenuElements())
             {
                 <li>
-                    @Html.ActionLink(element.Text, element.Action, element.Controller)
+                    @{ 
+                        var isActive = Context.Request.Path == Url.Action(element.Action, element.Controller);
+                    }
+                    @Html.ActionLink(
+                        element.Text,
+                        element.Action,
+                        element.Controller,
+                        null,
+                        new { @class = "btn w-100 " + (isActive ? "btn-primary text-white" : "btn-outline-primary") }
+                    )
                 </li>
             }
         </ul>
