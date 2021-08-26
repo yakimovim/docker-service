@@ -5,6 +5,7 @@
 @{
     Layout = "_Layout";
 }
+@inject Service.Model.Health HealthInfo
 
 <form method="post">
     <div class="form-check form-switch">
@@ -16,7 +17,54 @@
         <label class="form-check-label" for="IsReady">Is ready</label>
     </div>
     <button type="submit" class="btn btn-primary">Apply</button>
+    <div class="w100 d-flex m-3">
+        <div class="flex-grow-1 d-flex flex-column">
+            <div>Health</div>
+            <ul id="healthStatuses">
+                @foreach (var item in HealthInfo.HealthyStatuses)
+                {
+                    <li>@item.status at @item.timeStamp</li>
+                }
+            </ul>
+        </div>
+        <div class="flex-grow-1 d-flex flex-column">
+            <div>Ready</div>
+            <ul id="readyStatuses">
+                @foreach (var item in HealthInfo.ReadyStatuses)
+                {
+                    <li>@item.status at @item.timeStamp</li>
+                }
+            </ul>
+        </div>
+    </div>
 </form>
 
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.7/signalr.min.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            const hubConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/hubs/health")
+                .build();
 
+            hubConnection.on("HealthStatus", function (status, timeStamp) {
+                const statusElement = document.createElement("li");
+                statusElement.innerHTML = `${status} at ${timeStamp}`;
+
+                const healthStatuses = document.getElementById("healthStatuses");
+                healthStatuses.insertBefore(statusElement, healthStatuses.firstChild);
+            });
+
+            hubConnection.on("ReadyStatus", function (status, timeStamp) {
+                const statusElement = document.createElement("li");
+                statusElement.innerHTML = `${status} at ${timeStamp}`;
+
+                const readyStatuses = document.getElementById("readyStatuses");
+                readyStatuses.insertBefore(statusElement, readyStatuses.firstChild);
+            });
+
+            hubConnection.start();
+        });
+    </script>
+}
 

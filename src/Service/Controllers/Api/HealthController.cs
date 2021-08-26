@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Service.Hubs;
 using Service.Model;
+using System;
+using System.Threading.Tasks;
 
 namespace Service.Controllers.Api
 {
@@ -8,24 +12,36 @@ namespace Service.Controllers.Api
     public class HealthController : ControllerBase
     {
         private readonly Health _health;
+        private readonly IHubContext<HealthHub> _healthHubContext;
 
-        public HealthController(Health health)
+        public HealthController(
+            Health health,
+            IHubContext<HealthHub> healthHubContext)
         {
             _health = health ?? throw new System.ArgumentNullException(nameof(health));
+            _healthHubContext = healthHubContext ?? throw new System.ArgumentNullException(nameof(healthHubContext));
         }
 
         [HttpGet]
         [Route("healthy")]
-        public IActionResult Healthy()
+        public async Task<IActionResult> Healthy()
         {
-            return StatusCode((int)_health.Healthy);
+            var status = (int)_health.Healthy;
+            var timeStamp = DateTimeOffset.UtcNow;
+            _health.AddHealthyStatus(status, timeStamp);
+            await _healthHubContext.Clients.All.SendAsync("HealthStatus", status, timeStamp);
+            return StatusCode(status);
         }
 
         [HttpGet]
         [Route("ready")]
-        public IActionResult Ready()
+        public async Task<IActionResult> Ready()
         {
-            return StatusCode((int)_health.Ready);
+            var status = (int)_health.Ready;
+            var timeStamp = DateTimeOffset.UtcNow;
+            _health.AddReadyStatus(status, timeStamp);
+            await _healthHubContext.Clients.All.SendAsync("ReadyStatus", status, timeStamp);
+            return StatusCode(status);
         }
     }
 }

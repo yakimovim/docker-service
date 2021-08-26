@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Service.Controllers;
+using Service.Hubs;
 using Service.Model;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ namespace Service
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddSignalR();
 
             services.AddScoped<HomePageModelFactory>();
 
@@ -55,6 +58,8 @@ namespace Service
                 endpoints.MapControllers();
 
                 endpoints.MapDefaultControllerRoute();
+
+                endpoints.MapHub<HealthHub>("/hubs/health");
             });
         }
     }
