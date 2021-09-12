@@ -7,14 +7,68 @@
 }
 
 <table class="table table-striped table-bordered">
+    <colgroup width="20%"></colgroup>
     <tbody>
         <tr>
             <td>Computer name</td>
             <td>@Model.ComputerName</td>
         </tr>
         <tr>
+            <td>Operating system</td>
+            <td>@Model.OperatingSystem</td>
+        </tr>
+        <tr>
+            <td>Domain name</td>
+            <td>@Model.DomainName</td>
+        </tr>
+        <tr>
+            <td>User name</td>
+            <td>@Model.UserName</td>
+        </tr>
+        <tr>
+            <td>Number of processors</td>
+            <td>@Model.ProcessorCount</td>
+        </tr>
+        <tr>
             <td>Private memory (bytes)</td>
             <td>@Model.PrivateMemoryBytes</td>
         </tr>
+        <tr>
+            <td>Working set (bytes)</td>
+            <td>@Model.WorkingSetBytes</td>
+        </tr>
+        @foreach (var drive in Model.Drives)
+        {
+            <tr>
+                <td>Drive @drive.Name</td>
+                <td>
+                    <table class="table table-striped table-bordered">
+                        <colgroup width="30%"></colgroup>
+                        <tbody>
+                            <tr>
+                                <td>Drive type</td>
+                                <td>@drive.DriveType</td>
+                            </tr>
+                            <tr>
+                                <td>File system type</td>
+                                <td>@drive.DriveFormat</td>
+                            </tr>
+                            <tr>
+                                <td>Total size (bytes)</td>
+                                <td>@drive.TotalSize</td>
+                            </tr>
+                            <tr>
+                                <td>Available free space (bytes)</td>
+                                <td>@drive.AvailableFreeSpace</td>
+                            </tr>
+                            <tr>
+                                <td>Total free space (bytes)</td>
+                                <td>@drive.TotalFreeSpace</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

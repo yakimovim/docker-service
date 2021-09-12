@@ -2,6 +2,7 @@
 using Service.Controllers.Utilities;
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace Service.Controllers
 {
@@ -27,7 +28,19 @@ namespace Service.Controllers
     {
         public string ComputerName { get; set; }
 
+        public string OperatingSystem { get; set; }
+
+        public string DomainName { get; set; }
+
+        public string UserName { get; set; }
+
+        public int ProcessorCount { get; set; }
+
         public long PrivateMemoryBytes { get; set; }
+
+        public long WorkingSetBytes { get; set; }
+
+        public DriveInfo[] Drives { get; set; }
     }
 
     public sealed class HomePageModelFactory
@@ -38,8 +51,14 @@ namespace Service.Controllers
 
             return new HomePageModel
             {
-                ComputerName = Environment.MachineName,
-                PrivateMemoryBytes = process.PrivateMemorySize64
+                ComputerName = Environment.MachineName, 
+                OperatingSystem = Environment.OSVersion.ToString(),
+                DomainName = Environment.UserDomainName,
+                UserName = Environment.UserName,
+                ProcessorCount = Environment.ProcessorCount,
+                PrivateMemoryBytes = process.PrivateMemorySize64,
+                WorkingSetBytes = Environment.WorkingSet,
+                Drives = DriveInfo.GetDrives()
             };
         }
     }
