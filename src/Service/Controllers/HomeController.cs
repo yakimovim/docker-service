@@ -51,7 +51,7 @@ namespace Service.Controllers
 
             return new HomePageModel
             {
-                ComputerName = Environment.MachineName, 
+                ComputerName = Environment.MachineName,
                 OperatingSystem = Environment.OSVersion.ToString(),
                 DomainName = Environment.UserDomainName,
                 UserName = Environment.UserName,

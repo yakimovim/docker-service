@@ -13,7 +13,7 @@ namespace Service.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var fileSystemObjects = new LinkedList<FileSystemObject>();
+            var directoryContent = new DirectoryContent();
 
             if(Request.Query.ContainsKey("path"))
             {
@@ -25,37 +25,44 @@ namespace Service.Controllers
 
                 if(parentDirectory != null)
                 {
-                    fileSystemObjects.AddLast(new FileSystemObject(
+                    directoryContent.Parent = new FileSystemObject(
                         FileSystemObjectType.Directory,
                         "..",
                         HttpUtility.UrlEncode(parentDirectory.FullName)
-                    ));
+                    );
                 }
                 else
                 {
-                    fileSystemObjects.AddLast(new FileSystemObject(
+                    directoryContent.Parent = new FileSystemObject(
                         FileSystemObjectType.Directory,
                         "..",
                         string.Empty
-                    ));
+                    );
                 }
 
-                foreach (var subDirectory in directoryInfo.GetDirectories())
+                try
                 {
-                    fileSystemObjects.AddLast(new FileSystemObject(
-                        FileSystemObjectType.Directory,
-                        subDirectory.Name,
-                        HttpUtility.UrlEncode(subDirectory.FullName)
-                    ));
-                }
+                    foreach (var subDirectory in directoryInfo.GetDirectories())
+                    {
+                        directoryContent.Content.AddLast(new FileSystemObject(
+                            FileSystemObjectType.Directory,
+                            subDirectory.Name,
+                            HttpUtility.UrlEncode(subDirectory.FullName)
+                        ));
+                    }
 
-                foreach (var files in directoryInfo.GetFiles())
+                    foreach (var files in directoryInfo.GetFiles())
+                    {
+                        directoryContent.Content.AddLast(new FileSystemObject(
+                            FileSystemObjectType.File,
+                            files.Name,
+                            HttpUtility.UrlEncode(files.FullName)
+                        ));
+                    }
+                }
+                catch (UnauthorizedAccessException)
                 {
-                    fileSystemObjects.AddLast(new FileSystemObject(
-                        FileSystemObjectType.File,
-                        files.Name,
-                        HttpUtility.UrlEncode(files.FullName)
-                    ));
+                    directoryContent.HasAccess = false;
                 }
             }
             else
@@ -66,7 +73,7 @@ namespace Service.Controllers
                 {
                     var rootDirectory = drive.RootDirectory;
 
-                    fileSystemObjects.AddLast(new FileSystemObject(
+                    directoryContent.Content.AddLast(new FileSystemObject(
                         FileSystemObjectType.Directory,
                         rootDirectory.Name,
                         HttpUtility.UrlEncode(rootDirectory.FullName)
@@ -74,8 +81,17 @@ namespace Service.Controllers
                 }
             }
 
-            return View(fileSystemObjects);
+            return View(directoryContent);
         }
+    }
+
+    public sealed class DirectoryContent
+    {
+        public bool HasAccess { get; set; } = true;
+
+        public FileSystemObject Parent { get; set; }
+
+        public LinkedList<FileSystemObject> Content { get; set; } = new LinkedList<FileSystemObject>();
     }
 
     public enum FileSystemObjectType

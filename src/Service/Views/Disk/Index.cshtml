@@ -1,13 +1,21 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model System.Collections.Generic.IEnumerable<Service.Controllers.FileSystemObject>;
+@model Service.Controllers.DirectoryContent;
 @{
     Layout = "_Layout";
 }
 
 <ul>
-    @foreach (var fileSystemObject in Model)
+    @if (Model.Parent != null)
+    {
+        var link = Url.Action("Index", "Disk") + (!string.IsNullOrEmpty(Model.Parent.Path) ? $"?path={Model.Parent.Path}" : "");
+
+        <li>
+            <a href="@link">@Model.Parent.Name</a>
+        </li>
+    }
+    @foreach (var fileSystemObject in Model.Content)
     {
         var link = fileSystemObject.Type == Service.Controllers.FileSystemObjectType.Directory
             ? Url.Action("Index", "Disk") + (!string.IsNullOrEmpty(fileSystemObject.Path) ? $"?path={fileSystemObject.Path}" : "")
@@ -18,3 +26,10 @@
         </li>
     }
 </ul>
+
+@if (!Model.HasAccess)
+{
+    <div class="alert alert-danger" role="alert">
+        You have no access
+    </div>
+}
