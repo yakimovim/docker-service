@@ -5,6 +5,7 @@
 @{
     Layout = "_Layout";
 }
+@using static Service.Utilities.BytesUtilities;
 
 <table class="table table-striped table-bordered">
     <colgroup width="20%"></colgroup>
@@ -31,11 +32,11 @@
         </tr>
         <tr>
             <td>Private memory (bytes)</td>
-            <td>@Model.PrivateMemoryBytes</td>
+            <td>@Model.PrivateMemoryBytes (@Simplify(Model.PrivateMemoryBytes))</td>
         </tr>
         <tr>
             <td>Working set (bytes)</td>
-            <td>@Model.WorkingSetBytes</td>
+            <td>@Model.WorkingSetBytes (@Simplify(Model.WorkingSetBytes))</td>
         </tr>
         @foreach (var drive in Model.Drives)
         {
@@ -55,15 +56,15 @@
                             </tr>
                             <tr>
                                 <td>Total size (bytes)</td>
-                                <td>@drive.TotalSize</td>
+                                <td>@drive.TotalSize (@Simplify(drive.TotalSize))</td>
                             </tr>
                             <tr>
                                 <td>Available free space (bytes)</td>
-                                <td>@drive.AvailableFreeSpace</td>
+                                <td>@drive.AvailableFreeSpace (@Simplify(drive.AvailableFreeSpace))</td>
                             </tr>
                             <tr>
                                 <td>Total free space (bytes)</td>
-                                <td>@drive.TotalFreeSpace</td>
+                                <td>@drive.TotalFreeSpace (@Simplify(drive.TotalFreeSpace))</td>
                             </tr>
                         </tbody>
                     </table>
