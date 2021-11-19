@@ -33,6 +33,10 @@ namespace Service
 
             services.AddSingleton<Health>();
             services.Configure<HealthConfig>(Configuration.GetSection("DockerService:Health"));
+
+            services.AddSingleton<MemoryLoadProvider>();
+
+            services.AddHttpClient();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

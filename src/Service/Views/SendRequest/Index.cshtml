@@ -1,0 +1,34 @@
+﻿@*
+	For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Service.Controllers.SendRequestModel;
+@{
+	Layout = "_Layout";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+	var methods = new[] { "Get", "Post", "Put", "Delete" }
+				.Select(i => new SelectListItem { Value = i, Text = i })
+				.ToArray();
+}
+
+<form asp-controller="SendRequest" asp-action="SendRequest" method="post" class="m-3">
+	<div class="mb-3">
+		<label for="memorySize" class="form-label">Request URL:</label>
+		<div class="input-group">
+			<input type="url" class="form-control"
+				   id="requestUrl" name="requestUrl"
+				   required
+				   value=@Model.RequestUrl>
+			<select class="form-select flex-grow-0 w-auto" 
+				asp-for="RequestMethod" asp-items=@methods>
+			</select>
+		</div>
+	</div>
+	<button type="submit" class="btn btn-primary">Send request</button>
+</form>
+
+@if(!string.IsNullOrWhiteSpace(Model.ResponseBody))
+{
+	<div class="text-break">@Model.ResponseBody</div>
+}

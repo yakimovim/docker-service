@@ -29,6 +29,7 @@ namespace Service.Controllers
             return new EnvironmentType(
                 name,
                 variables.Keys.OfType<string>()
+                .OrderBy(k => k)
                 .Select(key => new EnvironmentVariable(key, variables[key] as string))
                 );
         }
