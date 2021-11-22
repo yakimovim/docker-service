@@ -6,14 +6,11 @@ using Microsoft.Extensions.Hosting;
 using Service.Controllers;
 using Service.Hubs;
 using Service.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Service.Services;
 
 namespace Service
 {
-    public class Startup
+	public class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -29,6 +26,8 @@ namespace Service
 
             services.AddSignalR();
 
+            services.AddServerSideBlazor();
+
             services.AddScoped<HomePageModelFactory>();
 
             services.AddSingleton<Health>();
@@ -37,6 +36,8 @@ namespace Service
             services.AddSingleton<MemoryLoadProvider>();
 
             services.AddHttpClient();
+
+            services.AddScoped<RequestSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +65,8 @@ namespace Service
                 endpoints.MapDefaultControllerRoute();
 
                 endpoints.MapHub<HealthHub>("/hubs/health");
+
+                endpoints.MapBlazorHub();
             });
         }
     }
