@@ -12,16 +12,27 @@
 
     <h2><a data-bs-toggle="collapse" href="#@environmentTableId">@environmentType.Name</a></h2>
 
-    <table class="table table-striped table-bordered collapse show" id="@environmentTableId">
-        <tbody>
-            @foreach (var environmentVariable in environmentType.Variables)
-            {
-                <tr>
-                    <td>@environmentVariable.Name</td>
-                    <td>@environmentVariable.Value</td>
-                </tr>
-            }
+    <div class="collapse show" id="@environmentTableId">
+    @if (environmentType.Variables.Any())
+    {
+        <table class="table table-striped table-bordered">
+            <tbody>
+                @foreach (var environmentVariable in environmentType.Variables)
+                {
+                    <tr>
+                        <td>@environmentVariable.Name</td>
+                        <td>@environmentVariable.Value</td>
+                    </tr>
+                }
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-primary" role="alert">
+          There are no items here.
+        </div>
+    }
+    </div>
 }

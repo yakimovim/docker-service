@@ -1,3 +1,5 @@
+#addin nuget:?package=Cake.Docker&version=1.0.0
+
 var target = Argument("target", "Default");
 
 //////////////////////////////////////////////////////////////////////
@@ -6,6 +8,7 @@ var target = Argument("target", "Default");
 
 var solutionFile = "DockerService.sln";
 var outputDirectory = "./output/";
+var dockerImageName = "iakimov/testservice:latest";
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -50,12 +53,39 @@ Task("Publish")
     DotNetCorePublish(solutionFile, settings);
 });
 
+Task("BuildDockerImage")
+    .Does(() => {
+    var settings = new DockerImageBuildSettings 
+    {
+        Tag = new string[] { dockerImageName }
+    };
+
+    DockerBuild(settings, ".");
+});
+
+Task("RunDockerImage")
+    .Does(() => {
+    var settings = new DockerContainerRunSettings  
+    {
+        Detach = true,
+        Rm = true,
+        Publish = new string[] { "5000:80" }
+    };
+
+    DockerRun(settings, dockerImageName, null);
+
+    Information("The service is started on port 5000");
+});
+
+Task("PushDockerImage")
+    .Does(() => {
+    DockerPush(dockerImageName);
+});
+
 Task("Default")
     .IsDependentOn("CleanUp")
     .IsDependentOn("Build")
     .IsDependentOn("Publish");
-
-
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
