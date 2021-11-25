@@ -38,6 +38,8 @@ namespace Service
             services.AddHttpClient();
 
             services.AddScoped<RequestSender>();
+
+            services.AddSingleton<ResponseDefinitions>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -130,7 +130,7 @@ namespace Service.Model
                 controller.Response.ContentType = _contentType;
             }
 
-            var result = controller.StatusCode(_status, _body);
+            var result = controller.StatusCode(_status, _body ?? string.Empty);
 
             return new ResponseItemExecutionResult(result);
         }
