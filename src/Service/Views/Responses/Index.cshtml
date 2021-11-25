@@ -1,0 +1,13 @@
+﻿@*
+	For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	Layout = "_Layout";
+}
+@using Service.Components
+
+<component type="typeof(ResponseDefinition)" render-mode="ServerPrerendered" />
+
+@section Scripts {
+	<script src="_framework/blazor.server.js"></script>
+}

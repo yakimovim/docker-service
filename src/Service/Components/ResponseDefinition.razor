@@ -1,0 +1,49 @@
+﻿@using Service.Model;
+
+<h3>ResponseDefinition</h3>
+
+@for(int i = 0; i < Items.Length; i++)
+{
+	var item = Items[i];
+
+	switch(item)
+	{
+		case Delay delay:
+			{
+				<div>Delay</div>
+
+				break;
+			}
+		case ProbableDelay delay:
+			{
+				<div>Probable delay</div>
+
+				break;
+			}
+		case Response response:
+			{
+				<ResponseDefinitionComponent Item=response />
+
+				break;
+			}
+		case ProbableResponse response:
+			{
+				<div>Probable response</div>
+
+				break;
+			}
+		case Call call:
+			{
+				<div>Call</div>
+
+				break;
+			}
+		case ProbableCall call:
+			{
+				<div>Probable call</div>
+
+				break;
+			}
+	}
+
+}

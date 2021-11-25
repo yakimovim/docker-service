@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Service.Model;
 
-namespace Service.Model
+namespace Service.Services
 {
     public class ResponseDefinitions
     {

@@ -1,0 +1,10 @@
+﻿@using Service.Model
+
+<h3>Response</h3>
+
+<div>Status: @Item.GetType().FullName</div>
+
+@code {
+	[Parameter]
+	public Response Item { get; set; }
+}
