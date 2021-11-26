@@ -1,12 +1,14 @@
 ﻿@using Service.Model;
 
-<h3>ResponseDefinition</h3>
+<h3>Response specification</h3>
 
-@for(int i = 0; i < Items.Length; i++)
+@for(int i = 0; i < Items.Count; i++)
 {
 	var item = Items[i];
 
-	switch(item)
+	<div class="m-3">
+
+	@switch(item)
 	{
 		case Delay delay:
 			{
@@ -22,7 +24,8 @@
 			}
 		case Response response:
 			{
-				<ResponseDefinitionComponent Item=response />
+				<ResponseDefinitionComponent Item=response Index=i Total=Items.Count 
+					Delete=DeleteItem MoveUp=MoveItemUp MoveDown=MoveItemDown />
 
 				break;
 			}
@@ -46,4 +49,17 @@
 			}
 	}
 
+	</div>
 }
+
+<div class="d-grid gap-2">
+	<div class="dropdown">
+	  <button class="btn btn-secondary dropdown-toggle" type="button" id="addItemDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+		Add item...
+	  </button>
+	  <ul class="dropdown-menu" aria-labelledby="addItemDropdownButton">
+		<li><a class="dropdown-item" href="#" @onclick="AddResponseItem">Add response item</a></li>
+	  </ul>
+	</div>
+	<button class="btn btn-primary m-3" @onclick="ApplyChanges">Apply</button>
+</div>

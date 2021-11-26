@@ -1,10 +1,84 @@
 ﻿@using Service.Model
 
-<h3>Response</h3>
+<h4 class="m-3">Response</h4>
 
-<div>Status: @Item.GetType().FullName</div>
+<EditForm class="m-3" Model=@Item>
+	<div class="mb-3">
+		<label for="responseStatus" class="form-label">Status:</label>
+		<InputNumber class="form-control"
+				id="responseStatus" name="responseStatus"
+				required
+				@bind-Value="Item.Status" />
+	</div>
+	<div class="mb-3">
+		<label for="responseContentType" class="form-label">Status:</label>
+		<InputText class="form-control"
+				id="responseContentType" name="responseContentType"
+				@bind-Value="Item.ContentType" />
+	</div>
+	<div class="mb-3">
+		<label for="responseBody" class="form-label">Body:</label>
+		<InputTextArea class="form-control" rows="5"
+				id="responseBody" name="responseBody"
+				@bind-Value="Item.Body" />
+	</div>
+	<button class="btn btn-primary" @attributes="@MoveUpButtonState" @onclick="MoveItemUp">Move up</button>
+	<button class="btn btn-primary" @attributes="@DeleteButtonState" @onclick="DeleteItem">Delete</button>
+	<button class="btn btn-primary" @attributes="@MoveDownButtonState" @onclick="MoveItemDown">Move down</button>
+</EditForm>
 
 @code {
 	[Parameter]
 	public Response Item { get; set; }
+
+	[Parameter]
+	public int Index { get; set; }
+
+	[Parameter]
+	public int Total { get; set; }
+
+	[Parameter]
+	public Action<int, ResponseItem> Delete { get; set; }
+
+	[Parameter]
+	public Action<int> MoveUp { get; set; }
+
+	[Parameter]
+	public Action<int> MoveDown { get; set; }
+
+	private bool CanDeleteItem => Total > 1;
+
+	private Dictionary<string, object> DeleteButtonState => new Dictionary<string, object>
+	{
+		{ "disabled", !CanDeleteItem }
+	};
+
+	private void DeleteItem()
+	{
+		Delete(Index, Item);
+	}
+
+	private bool CanMoveItemUp => Index > 0;
+
+	private Dictionary<string, object> MoveUpButtonState => new Dictionary<string, object>
+	{
+		{ "disabled", !CanMoveItemUp }
+	};
+
+	private void MoveItemUp()
+	{
+		MoveUp(Index);
+	}
+
+	private bool CanMoveItemDown => Index < (Total - 1);
+
+	private Dictionary<string, object> MoveDownButtonState => new Dictionary<string, object>
+	{
+		{ "disabled", !CanMoveItemDown }
+	};
+
+	private void MoveItemDown()
+	{
+		MoveDown(Index);
+	}
 }

@@ -13,6 +13,11 @@ namespace Service.Model
         /// <param name="controller">Controller.</param>
         /// <returns>Execution result.</returns>
         public abstract Task<ResponseItemExecutionResult> ExecuteAsync(ControllerBase controller);
+
+        /// <summary>
+        /// Clones the response item.
+        /// </summary>
+        public abstract ResponseItem Clone();
     }
 
     public sealed class ResponseItemExecutionResult
@@ -53,144 +58,154 @@ namespace Service.Model
 
     public abstract class ProbableResponseItem : ResponseItem
     {
-        private readonly double _probability;
-        private Random _rnd = new Random((int)DateTime.Now.Ticks);
+        private readonly Random _rnd = new Random((int)DateTime.Now.Ticks);
+        private double _probability = 0.0;
 
-        protected ProbableResponseItem(double probability)
+        public double Probability 
         {
-            if (probability < 0 || probability >= 1)
-                throw new ArgumentOutOfRangeException(nameof(probability));
+            get => _probability;
+            set
+            {
+                if (value < 0 || value >= 1)
+                    throw new ArgumentOutOfRangeException(nameof(value));
 
-            _probability = probability;
+                _probability = value;
+            }
         }
 
         protected bool IsHappened()
         {
-            return _rnd.NextDouble() < _probability;
+            return _rnd.NextDouble() < Probability;
         }
     }
 
     public sealed class Delay : ResponseItem
     {
-        private readonly TimeSpan _delay;
-
-        public Delay(TimeSpan delay)
-        {
-            _delay = delay;
-        }
+        public TimeSpan DelayDuration { get; set; }
 
         public override async Task<ResponseItemExecutionResult> ExecuteAsync(ControllerBase controller)
         {
-            await Task.Delay(_delay);
+            await Task.Delay(DelayDuration);
 
             return new ResponseItemExecutionResult();
+        }
+
+        public override ResponseItem Clone()
+        {
+            return new Delay { DelayDuration = DelayDuration };
         }
     }
 
     public sealed class ProbableDelay : ProbableResponseItem
     {
-        private readonly TimeSpan _delay;
-
-        public ProbableDelay(double probability, TimeSpan delay)
-            : base(probability)
-        {
-            _delay = delay;
-        }
+        public TimeSpan DelayDuration { get; set; }
 
         public override async Task<ResponseItemExecutionResult> ExecuteAsync(ControllerBase controller)
         {
             if(IsHappened())
             {
-                await Task.Delay(_delay);
+                await Task.Delay(DelayDuration);
             }
 
             return new ResponseItemExecutionResult();
+        }
+
+        public override ResponseItem Clone()
+        {
+            return new ProbableDelay 
+            { 
+                Probability = Probability,
+                DelayDuration = DelayDuration
+            };
         }
     }
 
     public sealed class Response : ResponseItem
     {
-        private readonly int _status;
-        private readonly object _body;
-        private readonly string _contentType;
-
-        public Response(int status = 200,
-            object body = null,
-            string contentType = null)
-        {
-            _status = status;
-            _body = body;
-            _contentType = contentType;
-        }
+        public int Status { get; set; } = 200;
+        public string Body { get; set; }
+        public string ContentType { get; set; }
 
         public override async Task<ResponseItemExecutionResult> ExecuteAsync(ControllerBase controller)
         {
-            if(!string.IsNullOrWhiteSpace(_contentType))
+            if(!string.IsNullOrWhiteSpace(ContentType))
             {
-                controller.Response.ContentType = _contentType;
+                controller.Response.ContentType = ContentType;
             }
 
-            var result = controller.StatusCode(_status, _body ?? string.Empty);
+            var result = controller.StatusCode(Status, Body ?? string.Empty);
 
             return new ResponseItemExecutionResult(result);
+        }
+
+        public override ResponseItem Clone()
+        {
+            return new Response
+            {
+                Status = Status,
+                Body = Body,
+                ContentType = ContentType
+            };
         }
     }
 
     public sealed class ProbableResponse : ProbableResponseItem
     {
-        private readonly int _status;
-        private readonly object _body;
-        private readonly string _contentType;
-
-        public ProbableResponse(
-            double probability,
-            int status = 200,
-            object body = null,
-            string contentType = null)
-            : base(probability)
-        {
-            _status = status;
-            _body = body;
-            _contentType = contentType;
-        }
+        public int Status { get; set; } = 200;
+        public object Body { get; set; }
+        public string ContentType { get; set; }
 
         public override async Task<ResponseItemExecutionResult> ExecuteAsync(ControllerBase controller)
         {
             if(IsHappened())
             {
-                if (!string.IsNullOrWhiteSpace(_contentType))
+                if (!string.IsNullOrWhiteSpace(ContentType))
                 {
-                    controller.Response.ContentType = _contentType;
+                    controller.Response.ContentType = ContentType;
                 }
 
-                var result = controller.StatusCode(_status, _body);
+                var result = controller.StatusCode(Status, Body ?? string.Empty);
 
                 return new ResponseItemExecutionResult(result);
             }
 
             return new ResponseItemExecutionResult();
         }
+
+        public override ResponseItem Clone()
+        {
+            return new ProbableResponse
+            {
+                Probability = Probability,
+                Status = Status,
+                Body = Body,
+                ContentType = ContentType
+            };
+        }
     }
 
     public sealed class Call : ResponseItem
     {
-        private readonly Uri _url;
-        private readonly bool _returnResponse;
+        private Uri _uri = new Uri("http://localhost");
 
-        public Call(Uri url,
-            bool returnResponse = false)
+        public string Url
         {
-            _url = url ?? throw new ArgumentNullException(nameof(url));
-            _returnResponse = returnResponse;
+            get => _uri.ToString();
+            set
+            {
+                _uri = new Uri(value);
+            }
         }
+
+        public bool ReturnResponse;
 
         public override async Task<ResponseItemExecutionResult> ExecuteAsync(ControllerBase controller)
         {
             using var client = new HttpClient();
 
-            var response = await client.GetAsync(_url);
+            var response = await client.GetAsync(_uri);
 
-            if(_returnResponse)
+            if(ReturnResponse)
             {
                 controller.Response.ContentType = response.Content?.Headers?.ContentType?.MediaType;
 
@@ -203,22 +218,31 @@ namespace Service.Model
 
             return new ResponseItemExecutionResult();
         }
+
+        public override ResponseItem Clone()
+        {
+            return new Call
+            {
+                Url = Url,
+                ReturnResponse = ReturnResponse,
+            };
+        }
     }
 
     public sealed class ProbableCall : ProbableResponseItem
     {
-        private readonly Uri _url;
-        private readonly bool _returnResponse;
+        private Uri _uri = new Uri("http://localhost");
 
-        public ProbableCall(
-            double probability,
-            Uri url,
-            bool returnResponse = false)
-            : base(probability)
+        public string Url
         {
-            _url = url ?? throw new ArgumentNullException(nameof(url));
-            _returnResponse = returnResponse;
+            get => _uri.ToString();
+            set
+            {
+                _uri = new Uri(value);
+            }
         }
+
+        public bool ReturnResponse;
 
         public override async Task<ResponseItemExecutionResult> ExecuteAsync(ControllerBase controller)
         {
@@ -226,9 +250,9 @@ namespace Service.Model
             {
                 using var client = new HttpClient();
 
-                var response = await client.GetAsync(_url);
+                var response = await client.GetAsync(_uri);
 
-                if (_returnResponse)
+                if (ReturnResponse)
                 {
                     controller.Response.ContentType = response.Content?.Headers?.ContentType?.MediaType;
 
@@ -241,6 +265,16 @@ namespace Service.Model
             }
 
             return new ResponseItemExecutionResult();
+        }
+
+        public override ResponseItem Clone()
+        {
+            return new ProbableCall
+            {
+                Probability = Probability,
+                Url = Url,
+                ReturnResponse = ReturnResponse,
+            };
         }
     }
 }
