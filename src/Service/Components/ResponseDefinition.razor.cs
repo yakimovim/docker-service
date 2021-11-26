@@ -22,7 +22,7 @@ namespace Service.Components
                 .ToList();
         }
 
-        private void DeleteItem(int index, ResponseItem item)
+        private void DeleteItem(int index)
         {
             Items.RemoveAt(index);
             StateHasChanged();
@@ -47,6 +47,36 @@ namespace Service.Components
         private void AddResponseItem()
         {
             Items.Add(new Response());
+            StateHasChanged();
+        }
+
+        private void AddProbableResponseItem()
+        {
+            Items.Add(new ProbableResponse { Probability = 0.5 });
+            StateHasChanged();
+        }
+
+        private void AddDelayItem()
+        {
+            Items.Add(new Delay { DelayDurationInSeconds = 3 });
+            StateHasChanged();
+        }
+
+        private void AddProbableDelayItem()
+        {
+            Items.Add(new ProbableDelay { Probability = 0.5, DelayDurationInSeconds = 3 });
+            StateHasChanged();
+        }
+
+        private void AddCallItem()
+        {
+            Items.Add(new Call());
+            StateHasChanged();
+        }
+
+        private void AddProbableCallItem()
+        {
+            Items.Add(new ProbableCall { Probability = 0.5 });
             StateHasChanged();
         }
 

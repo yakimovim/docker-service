@@ -1,0 +1,29 @@
+﻿@using Service.Model
+@inherits ResponseSpecificationComponentBase
+
+<h4 class="m-3">Probable delay</h4>
+
+<EditForm class="m-3" Model=@Item>
+	<div class="mb-3">
+		<label for="probability" class="form-label">Probability (from 0 to 1):</label>
+		<InputNumber class="form-control" 
+				id="probability" name="probability"
+				required min="0" max="1"
+				@bind-Value="Item.Probability" />
+	</div>
+	<div class="mb-3">
+		<label for="delay" class="form-label">Delay in seconds:</label>
+		<InputNumber class="form-control"
+				id="delay" name="delay"
+				required min="0"
+				@bind-Value="Item.DelayDurationInSeconds" />
+	</div>
+	<button class="btn btn-primary" @attributes="@MoveUpButtonState" @onclick="MoveItemUp">Move up</button>
+	<button class="btn btn-primary" @attributes="@DeleteButtonState" @onclick="DeleteItem">Delete</button>
+	<button class="btn btn-primary" @attributes="@MoveDownButtonState" @onclick="MoveItemDown">Move down</button>
+</EditForm>
+
+@code {
+	[Parameter]
+	public ProbableDelay Item { get; set; }
+}

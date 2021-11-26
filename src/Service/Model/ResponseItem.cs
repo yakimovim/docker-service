@@ -81,30 +81,54 @@ namespace Service.Model
 
     public sealed class Delay : ResponseItem
     {
-        public TimeSpan DelayDuration { get; set; }
+        private TimeSpan _delayDuration;
+
+        public int DelayDurationInSeconds 
+        {
+            get => (int) _delayDuration.TotalSeconds;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException(nameof(value));
+
+                _delayDuration = TimeSpan.FromSeconds(value);
+            }
+        }
 
         public override async Task<ResponseItemExecutionResult> ExecuteAsync(ControllerBase controller)
         {
-            await Task.Delay(DelayDuration);
+            await Task.Delay(_delayDuration);
 
             return new ResponseItemExecutionResult();
         }
 
         public override ResponseItem Clone()
         {
-            return new Delay { DelayDuration = DelayDuration };
+            return new Delay { DelayDurationInSeconds = DelayDurationInSeconds };
         }
     }
 
     public sealed class ProbableDelay : ProbableResponseItem
     {
-        public TimeSpan DelayDuration { get; set; }
+        private TimeSpan _delayDuration;
+
+        public int DelayDurationInSeconds
+        {
+            get => (int)_delayDuration.TotalSeconds;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException(nameof(value));
+
+                _delayDuration = TimeSpan.FromSeconds(value);
+            }
+        }
 
         public override async Task<ResponseItemExecutionResult> ExecuteAsync(ControllerBase controller)
         {
             if(IsHappened())
             {
-                await Task.Delay(DelayDuration);
+                await Task.Delay(_delayDuration);
             }
 
             return new ResponseItemExecutionResult();
@@ -115,7 +139,7 @@ namespace Service.Model
             return new ProbableDelay 
             { 
                 Probability = Probability,
-                DelayDuration = DelayDuration
+                DelayDurationInSeconds = DelayDurationInSeconds
             };
         }
     }
@@ -152,7 +176,7 @@ namespace Service.Model
     public sealed class ProbableResponse : ProbableResponseItem
     {
         public int Status { get; set; } = 200;
-        public object Body { get; set; }
+        public string Body { get; set; }
         public string ContentType { get; set; }
 
         public override async Task<ResponseItemExecutionResult> ExecuteAsync(ControllerBase controller)
@@ -197,15 +221,30 @@ namespace Service.Model
             }
         }
 
-        public bool ReturnResponse;
+        public string Method { get; set; } = "Get";
+
+        public string Body { get; set; }
+
+        public bool ReturnResponse { get; set; }
 
         public override async Task<ResponseItemExecutionResult> ExecuteAsync(ControllerBase controller)
         {
             using var client = new HttpClient();
 
-            var response = await client.GetAsync(_uri);
+            var request = new HttpRequestMessage
+            {
+                Method = new HttpMethod(Method),
+                RequestUri = _uri,
+            };
 
-            if(ReturnResponse)
+            if (request.Method != HttpMethod.Get)
+            {
+                request.Content = new StringContent(Body);
+            }
+
+            var response = await client.SendAsync(request);
+
+            if (ReturnResponse)
             {
                 controller.Response.ContentType = response.Content?.Headers?.ContentType?.MediaType;
 
@@ -224,6 +263,8 @@ namespace Service.Model
             return new Call
             {
                 Url = Url,
+                Method = Method,
+                Body = Body,
                 ReturnResponse = ReturnResponse,
             };
         }
@@ -242,7 +283,11 @@ namespace Service.Model
             }
         }
 
-        public bool ReturnResponse;
+        public string Method { get; set; } = "Get";
+
+        public string Body { get; set; }
+
+        public bool ReturnResponse { get; set; }
 
         public override async Task<ResponseItemExecutionResult> ExecuteAsync(ControllerBase controller)
         {
@@ -250,7 +295,18 @@ namespace Service.Model
             {
                 using var client = new HttpClient();
 
-                var response = await client.GetAsync(_uri);
+                var request = new HttpRequestMessage
+                {
+                    Method = new HttpMethod(Method),
+                    RequestUri = _uri,
+                };
+
+                if(request.Method != HttpMethod.Get)
+                {
+                    request.Content = new StringContent(Body);
+                }
+
+                var response = await client.SendAsync(request);
 
                 if (ReturnResponse)
                 {
@@ -273,6 +329,8 @@ namespace Service.Model
             {
                 Probability = Probability,
                 Url = Url,
+                Method = Method,
+                Body = Body,
                 ReturnResponse = ReturnResponse,
             };
         }

@@ -1,0 +1,52 @@
+﻿@using Service.Model
+@inherits ResponseSpecificationComponentBase
+
+<h4 class="m-3">Probable call</h4>
+
+<EditForm class="m-3" Model=@Item>
+	<div class="mb-3">
+		<label for="probability" class="form-label">Probability (from 0 to 1):</label>
+		<InputNumber class="form-control"
+					 id="probability" name="probability"
+					 required min="0" max="1"
+					 @bind-Value="Item.Probability" />
+	</div>
+	<div class="mb-3">
+		<label for="requestUrl" class="form-label">Request URL:</label>
+		<div class="input-group">
+			<InputText type="url" class="form-control"
+					   id="requestUrl" name="requestUrl"
+					   required
+					   @bind-Value="Item.Url" />
+			<InputSelect class="form-select flex-grow-0 w-auto" @bind-Value="Item.Method">
+				<option value="Get">Get</option>
+				<option value="Post">Post</option>
+				<option value="Put">Put</option>
+				<option value="Delete">Delete</option>
+			</InputSelect>
+		</div>
+	</div>
+	@if (Item.Method != "Get")
+	{
+		<div class="mb-3">
+			<label for="requestBody" class="form-label">Request body:</label>
+			<InputTextArea class="form-control" rows="4"
+					   id="requestBody" name="requestBody"
+					   @bind-Value="Item.Body" />
+		</div>
+	}
+	<div class="form-check">
+		<label for="returnResponse" class="form-label">Return response</label>
+		<InputCheckbox class="form-check-input"
+					   id="returnResponse" name="returnResponse"
+					   @bind-Value="Item.ReturnResponse" />
+	</div>
+	<button class="btn btn-primary" @attributes="@MoveUpButtonState" @onclick="MoveItemUp">Move up</button>
+	<button class="btn btn-primary" @attributes="@DeleteButtonState" @onclick="DeleteItem">Delete</button>
+	<button class="btn btn-primary" @attributes="@MoveDownButtonState" @onclick="MoveItemDown">Move down</button>
+</EditForm>
+
+@code {
+	[Parameter]
+	public ProbableCall Item { get; set; }
+}

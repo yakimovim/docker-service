@@ -1,4 +1,5 @@
 ﻿@using Service.Model;
+@using Service.Components.ResponseSpecifications;
 
 <h3>Response specification</h3>
 
@@ -12,13 +13,15 @@
 	{
 		case Delay delay:
 			{
-				<div>Delay</div>
+				<DelayDefinitionComponent Item=delay Index=i Total=Items.Count 
+					Delete=DeleteItem MoveUp=MoveItemUp MoveDown=MoveItemDown />
 
 				break;
 			}
 		case ProbableDelay delay:
 			{
-				<div>Probable delay</div>
+				<ProbableDelayDefinitionComponent Item=delay Index=i Total=Items.Count 
+					Delete=DeleteItem MoveUp=MoveItemUp MoveDown=MoveItemDown />
 
 				break;
 			}
@@ -31,19 +34,22 @@
 			}
 		case ProbableResponse response:
 			{
-				<div>Probable response</div>
+				<ProbableResponseDefinitionComponent Item=response Index=i Total=Items.Count 
+					Delete=DeleteItem MoveUp=MoveItemUp MoveDown=MoveItemDown />
 
 				break;
 			}
 		case Call call:
 			{
-				<div>Call</div>
+				<CallDefinitionComponent Item=call Index=i Total=Items.Count 
+					Delete=DeleteItem MoveUp=MoveItemUp MoveDown=MoveItemDown />
 
 				break;
 			}
 		case ProbableCall call:
 			{
-				<div>Probable call</div>
+				<ProbableCallDefinitionComponent Item=call Index=i Total=Items.Count 
+					Delete=DeleteItem MoveUp=MoveItemUp MoveDown=MoveItemDown />
 
 				break;
 			}
@@ -59,6 +65,11 @@
 	  </button>
 	  <ul class="dropdown-menu" aria-labelledby="addItemDropdownButton">
 		<li><a class="dropdown-item" href="#" @onclick="AddResponseItem">Add response item</a></li>
+		<li><a class="dropdown-item" href="#" @onclick="AddProbableResponseItem">Add probable response item</a></li>
+		<li><a class="dropdown-item" href="#" @onclick="AddDelayItem">Add delay item</a></li>
+		<li><a class="dropdown-item" href="#" @onclick="AddProbableDelayItem">Add probable delay item</a></li>
+		<li><a class="dropdown-item" href="#" @onclick="AddCallItem">Add call item</a></li>
+		<li><a class="dropdown-item" href="#" @onclick="AddProbableCallItem">Add probable call item</a></li>
 	  </ul>
 	</div>
 	<button class="btn btn-primary m-3" @onclick="ApplyChanges">Apply</button>
