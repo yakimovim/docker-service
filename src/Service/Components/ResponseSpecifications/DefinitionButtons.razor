@@ -1,0 +1,9 @@
+﻿<button class="btn btn-primary" @attributes="@Component.MoveUpButtonState" @onclick="Component.MoveItemUp">Move up <i class="bi bi-arrow-up-circle"></i></button>
+<button class="btn btn-primary" @attributes="@Component.DeleteButtonState" @onclick="Component.DeleteItem">Delete <i class="bi bi-x-circle"></i></button>
+<button class="btn btn-primary" @attributes="@Component.MoveDownButtonState" @onclick="Component.MoveItemDown">Move down  <i class="bi bi-arrow-down-circle"></i></button>
+
+
+@code {
+	[Parameter]
+	public ResponseSpecificationComponentBase Component { get; set; }
+}

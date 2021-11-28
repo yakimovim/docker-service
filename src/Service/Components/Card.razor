@@ -1,0 +1,14 @@
+﻿<div class="card m-3">
+	<div class="card-body">
+		<h5 class="card-title fw-bold"><i class="bi bi-box"></i> @Title</h5>
+		@ChildContent
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public string Title { get; set; }
+
+	[Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

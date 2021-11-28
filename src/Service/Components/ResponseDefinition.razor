@@ -1,13 +1,30 @@
 ﻿@using Service.Model;
 @using Service.Components.ResponseSpecifications;
 
-<h3>Response specification</h3>
+<h1 class="text-center fw-bold">Response specification for URL \api\work\a</h1>
+
+<div class="d-flex flex-column p-2">
+	<div class="d-flex flex-column dropdown m-1">
+	  <button class="btn btn-secondary dropdown-toggle" type="button" id="topAddItemDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+		Add item...
+	  </button>
+	  <ul class="dropdown-menu" aria-labelledby="topAddItemDropdownButton">
+		<li><a class="dropdown-item" href="#" @onclick="AddResponseItem">Add response item</a></li>
+		<li><a class="dropdown-item" href="#" @onclick="AddProbableResponseItem">Add probable response item</a></li>
+		<li><a class="dropdown-item" href="#" @onclick="AddDelayItem">Add delay item</a></li>
+		<li><a class="dropdown-item" href="#" @onclick="AddProbableDelayItem">Add probable delay item</a></li>
+		<li><a class="dropdown-item" href="#" @onclick="AddCallItem">Add call item</a></li>
+		<li><a class="dropdown-item" href="#" @onclick="AddProbableCallItem">Add probable call item</a></li>
+	  </ul>
+	</div>
+	<button class="btn btn-primary m-1" @onclick="ApplyChanges">Apply</button>
+</div>
+
+<div class="overflow-auto vh-100">
 
 @for(int i = 0; i < Items.Count; i++)
 {
 	var item = Items[i];
-
-	<div class="m-3">
 
 	@switch(item)
 	{
@@ -54,16 +71,16 @@
 				break;
 			}
 	}
-
-	</div>
 }
 
-<div class="d-grid gap-2">
-	<div class="dropdown">
-	  <button class="btn btn-secondary dropdown-toggle" type="button" id="addItemDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+</div>
+
+<div class="d-flex flex-column p-2">
+	<div class="d-flex flex-column dropdown m-1">
+	  <button class="btn btn-secondary dropdown-toggle" type="button" id="bottomAddItemDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
 		Add item...
 	  </button>
-	  <ul class="dropdown-menu" aria-labelledby="addItemDropdownButton">
+	  <ul class="dropdown-menu" aria-labelledby="bottomAddItemDropdownButton">
 		<li><a class="dropdown-item" href="#" @onclick="AddResponseItem">Add response item</a></li>
 		<li><a class="dropdown-item" href="#" @onclick="AddProbableResponseItem">Add probable response item</a></li>
 		<li><a class="dropdown-item" href="#" @onclick="AddDelayItem">Add delay item</a></li>
@@ -72,5 +89,5 @@
 		<li><a class="dropdown-item" href="#" @onclick="AddProbableCallItem">Add probable call item</a></li>
 	  </ul>
 	</div>
-	<button class="btn btn-primary m-3" @onclick="ApplyChanges">Apply</button>
+	<button class="btn btn-primary m-1" @onclick="ApplyChanges">Apply</button>
 </div>

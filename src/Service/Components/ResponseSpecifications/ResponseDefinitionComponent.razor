@@ -1,32 +1,30 @@
 ﻿@using Service.Model
 @inherits ResponseSpecificationComponentBase
 
-<h4 class="m-3">Response</h4>
-
-<EditForm class="m-3" Model=@Item>
-	<div class="mb-3">
-		<label for="responseStatus" class="form-label">Status:</label>
-		<InputNumber class="form-control"
-				id="responseStatus" name="responseStatus"
-				required
-				@bind-Value="Item.Status" />
-	</div>
-	<div class="mb-3">
-		<label for="responseContentType" class="form-label">Content type:</label>
-		<InputText class="form-control"
-				id="responseContentType" name="responseContentType"
-				@bind-Value="Item.ContentType" />
-	</div>
-	<div class="mb-3">
-		<label for="responseBody" class="form-label">Body:</label>
-		<InputTextArea class="form-control" rows="5"
-				id="responseBody" name="responseBody"
-				@bind-Value="Item.Body" />
-	</div>
-	<button class="btn btn-primary" @attributes="@MoveUpButtonState" @onclick="MoveItemUp">Move up</button>
-	<button class="btn btn-primary" @attributes="@DeleteButtonState" @onclick="DeleteItem">Delete</button>
-	<button class="btn btn-primary" @attributes="@MoveDownButtonState" @onclick="MoveItemDown">Move down</button>
-</EditForm>
+<Card Title="Response">
+	<EditForm class="m-3" Model=@Item>
+		<div class="mb-3">
+			<label for="responseStatus" class="form-label">Status:</label>
+			<InputNumber class="form-control"
+					id="responseStatus" name="responseStatus"
+					required
+					@bind-Value="Item.Status" />
+		</div>
+		<div class="mb-3">
+			<label for="responseContentType" class="form-label">Content type:</label>
+			<InputText class="form-control"
+					id="responseContentType" name="responseContentType"
+					@bind-Value="Item.ContentType" />
+		</div>
+		<div class="mb-3">
+			<label for="responseBody" class="form-label">Body:</label>
+			<InputTextArea class="form-control" rows="5"
+					id="responseBody" name="responseBody"
+					@bind-Value="Item.Body" />
+		</div>
+		<DefinitionButtons Component=@this />
+	</EditForm>
+</Card>
 
 @code {
 	[Parameter]

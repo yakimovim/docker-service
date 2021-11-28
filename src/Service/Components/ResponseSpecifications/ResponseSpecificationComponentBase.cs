@@ -23,36 +23,36 @@ namespace Service.Components.ResponseSpecifications
 
         protected bool CanDeleteItem => Total > 1;
 
-        protected Dictionary<string, object> DeleteButtonState => new Dictionary<string, object>
+        protected internal Dictionary<string, object> DeleteButtonState => new Dictionary<string, object>
         {
             { "disabled", !CanDeleteItem }
         };
 
-        protected void DeleteItem()
+        protected internal void DeleteItem()
         {
             Delete(Index);
         }
 
         protected bool CanMoveItemUp => Index > 0;
 
-        protected Dictionary<string, object> MoveUpButtonState => new Dictionary<string, object>
+        protected internal Dictionary<string, object> MoveUpButtonState => new Dictionary<string, object>
         {
             { "disabled", !CanMoveItemUp }
         };
 
-        protected void MoveItemUp()
+        protected internal void MoveItemUp()
         {
             MoveUp(Index);
         }
 
         protected bool CanMoveItemDown => Index < (Total - 1);
 
-        protected Dictionary<string, object> MoveDownButtonState => new Dictionary<string, object>
+        protected internal Dictionary<string, object> MoveDownButtonState => new Dictionary<string, object>
         {
             { "disabled", !CanMoveItemDown }
         };
 
-        protected void MoveItemDown()
+        protected internal void MoveItemDown()
         {
             MoveDown(Index);
         }
